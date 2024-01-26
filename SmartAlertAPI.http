@@ -1,0 +1,6 @@
+@SmartAlertAPI_HostAddress = http://localhost:5219
+
+GET {{SmartAlertAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
