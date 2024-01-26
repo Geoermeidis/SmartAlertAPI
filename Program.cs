@@ -1,9 +1,24 @@
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using SmartAlertAPI.Data;
+using SmartAlertAPI.Models;
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen();
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ConnStr")));
+
+services.AddAuthentication().AddJwtBearer();
+services.AddAuthorization();
+services.AddAuthorizationBuilder()
+  .AddPolicy("officer", policy =>
+        policy
+            .RequireRole("officer")
+            .RequireClaim("scope", "dangers_api"));
 
 var app = builder.Build();
 
@@ -19,7 +34,8 @@ app.UseStatusCodePages(async statusCodeContext
     => await Results.Problem(statusCode: statusCodeContext.HttpContext.Response.StatusCode)
                  .ExecuteAsync(statusCodeContext.HttpContext));
 
+
 app.UseHttpsRedirection();
-
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.Run();
