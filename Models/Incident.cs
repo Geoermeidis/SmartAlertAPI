@@ -12,7 +12,7 @@ namespace SmartAlertAPI.Models
         public Guid CategoryId { get; set; } = Guid.NewGuid();
         public string Comments { get; set; } = string.Empty;
         [ForeignKey("User")]
-        public string UserId { get; set; } = string.Empty;
+        public Guid UserId { get; set; }
         public string PhotoURL { get; set; } = string.Empty;
 
         public double Latitude { get; set; }
@@ -21,7 +21,7 @@ namespace SmartAlertAPI.Models
         public int TotalSubmissions { get; set; } = 0;
         public IncidentState State { get; set; } = IncidentState.Submitted;
         [ForeignKey("CivilOfficer")]
-        public string AcceptedById { get; set; } = string.Empty;
+        public Guid AcceptedById { get; set; }
         public User User { get; set; } = new ();
         public User CivilOfficer { get; set; } = new ();
         public DangerCategory Category { get; set; } = new();

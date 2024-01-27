@@ -5,7 +5,7 @@ using System.Reflection.Emit;
 
 namespace SmartAlertAPI.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<User>
+    public class ApplicationDbContext: DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -14,23 +14,6 @@ namespace SmartAlertAPI.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            /* 
-                 modelBuilder.Entity<Blog>()
-        .HasMany(e => e.Posts)
-        .WithOne(e => e.Blog)
-        .HasForeignKey(e => e.BlogId)
-        .IsRequired();
-
-                modelBuilder.Entity<Post>()
-        .HasMany(e => e.Tags)
-        .WithMany(e => e.Posts);
-
-            modelBuilder.Entity<Game>()
-    .HasOne(e => e.Team1)
-    .WithMany()
-    .OnDelete(DeleteBehavior.Restrict); // <--
-             */
 
             builder.Entity<User>()
                 .HasMany(u => u.IncidentsReported)
@@ -58,5 +41,6 @@ namespace SmartAlertAPI.Data
         public DbSet<Incident> Incidents { get; set; }
         public DbSet<DangerCategory> DangerCategories {  get; set; }
         public DbSet<User> Users {  get; set; }
+        public DbSet<TokenBlackList> TokenBlackList { get; set; }
     }
 }
