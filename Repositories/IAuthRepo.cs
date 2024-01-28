@@ -7,5 +7,6 @@ public interface IAuthRepo
     void Logout();
     string Login(UserLoginDto userData);
     void Signup(UserSignupDto userData);
-    bool IsUserUnique(string Email);
+    bool IsUsernameUnique(string username);
+    bool IsEmailUnique(string email); 
 }

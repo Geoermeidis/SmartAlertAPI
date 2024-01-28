@@ -4,7 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using SmartAlertAPI.Data;
 using SmartAlertAPI.Models;
 
-namespace SmartAlertAPI.Utils;
+namespace SmartAlertAPI.Utils.JsonWebToken;
 
 public class JwtTokenManager : IJwtTokenManager
 {
@@ -47,12 +47,13 @@ public class JwtTokenManager : IJwtTokenManager
 
     public bool IsValid()
     {
-        if(_applicationDbContext.TokenBlackList.Any(t => t.Token.Equals(GetToken())))
+        if (_applicationDbContext.TokenBlackList.Any(t => t.Token.Equals(GetToken())))
             return false;
         return true;
     }
 
-    public string GetCurrentUserId() {
+    public string GetCurrentUserId()
+    {
         JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
         var userId = handler.ReadJwtToken(GetToken().Substring(7)).Claims.ElementAt(0).Value.ToString();
         return userId;

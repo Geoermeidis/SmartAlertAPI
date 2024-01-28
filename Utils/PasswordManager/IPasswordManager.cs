@@ -1,4 +1,4 @@
-namespace SmartAlertAPI.Utils;
+namespace SmartAlertAPI.Utils.PasswordManager;
 
 public interface IPasswordManager
 {
