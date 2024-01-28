@@ -9,12 +9,11 @@ namespace SmartAlertAPI.Models
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         [ForeignKey("Category")]
-        public Guid CategoryId { get; set; } = Guid.NewGuid();
+        public Guid CategoryId { get; set; }
         public string Comments { get; set; } = string.Empty;
         [ForeignKey("User")]
         public Guid UserId { get; set; }
         public string PhotoURL { get; set; } = string.Empty;
-
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public DateTime SubmittedAt { get; set; } = DateTime.Now;
