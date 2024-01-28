@@ -39,7 +39,7 @@ namespace SmartAlertAPI.Endpoints
         public static IResult Register(IAuthService _authService, [FromBody] UserSignupDto userSignupDto) {
 
             var response = _authService.Register(userSignupDto);  // add exception handling for database errors
-            if (response.IsSuccess){
+            if (response.ErrorMessages.IsNullOrEmpty()){
                 return Results.Ok(response);
             }
             else {
@@ -50,7 +50,7 @@ namespace SmartAlertAPI.Endpoints
 
         public static IResult Login(IAuthService _authService, [FromBody] UserLoginDto userLoginDto) {
             var response = _authService.Login(userLoginDto);
-            if (response.IsSuccess)
+            if (response.ErrorMessages.IsNullOrEmpty())
                 return Results.Ok(response);
             else
                 return Results.NotFound(response);
