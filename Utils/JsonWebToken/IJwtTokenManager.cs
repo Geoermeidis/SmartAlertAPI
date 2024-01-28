@@ -1,6 +1,6 @@
 using SmartAlertAPI.Models;
 
-namespace SmartAlertAPI.Utils;
+namespace SmartAlertAPI.Utils.JsonWebToken;
 
 public interface IJwtTokenManager
 {

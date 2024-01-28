@@ -1,3 +1,4 @@
+using MagicVilla_CouponAPI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,8 +10,11 @@ using SmartAlertAPI.Endpoints;
 using SmartAlertAPI.Models;
 using SmartAlertAPI.Repositories;
 using SmartAlertAPI.Services;
-using SmartAlertAPI.Utils;
 using System.Text;
+using FluentValidation;
+using SmartAlertAPI.Utils.Validations;
+using SmartAlertAPI.Utils.JsonWebToken;
+using SmartAlertAPI.Utils.PasswordManager;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +27,12 @@ builder.Services.AddSingleton<IPasswordManager, PasswordManager>();
 builder.Services.AddScoped<IJwtTokenManager, JwtTokenManager>();
 builder.Services.AddScoped<IAuthRepo, AuthRepo>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+
+// Mapping
+builder.Services.AddAutoMapper(typeof(MappingConfig));
+
+// Validations
+builder.Services.AddValidatorsFromAssemblyContaining(typeof(AuthRegisterValidation));
 
 // Swagger
 builder.Services.AddSwaggerGen(c =>
@@ -78,7 +88,6 @@ builder.Services.AddAuthorization();
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("OfficerRole", policy => policy.RequireClaim("role", "Officer").RequireClaim("scope", "alert_api"))
     .AddPolicy("CivilianRole", policy => policy.RequireClaim("role", "Civilian").RequireClaim("scope", "alert_api"));
-
 
 var app = builder.Build();
 
