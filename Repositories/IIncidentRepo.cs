@@ -8,9 +8,8 @@ namespace SmartAlertAPI.Repositories
         ICollection<Incident> GetIncidents();
         ICollection<Incident> GetIncidentByCategory(string category);
         Incident? GetIncidentById(Guid id);
-        Incident CreateIncident(IncidentCreateDTO incidentDTO);
-        Incident UpdateIncidentStatus(IncidentUpdateDTO incidentDTO, string status);
-        // Incident UpdateIncidentCount(IncidentUpd)
-
+        Incident CreateIncident(IncidentCreateDTORepo incidentDTO);
+        Incident? UpdateIncidentStatus(Guid id, string status);
+        Incident? UpdateIncidentSumbissions(Guid id);
     }
 }

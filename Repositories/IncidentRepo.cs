@@ -22,17 +22,19 @@ namespace SmartAlertAPI.Repositories
 
         public Incident? GetIncidentById(Guid id)
         {
-            return _context.Incidents.First(c => c.Id == id);
+            return _context.Incidents.FirstOrDefault(c => c.Id == id);
         }
         
         public ICollection<Incident> GetIncidentByCategory(string category)
         {
+            
             var cat = _context.DangerCategories.FirstOrDefault(c => c.Name.Equals(category));
             if (cat is null) return [];
-            return _context.Incidents.Where(c => c.CategoryId.Equals(cat.Id)).ToList();
+            var catid = cat.Id;
+            return _context.Incidents.Where(c => c.CategoryId == catid).ToList();
         }
 
-        public Incident CreateIncident(IncidentCreateDTO incidentDTO)
+        public Incident CreateIncident(IncidentCreateDTORepo incidentDTO)
         {
             Incident incident = _mapper.Map<Incident>(incidentDTO);
 
@@ -42,9 +44,44 @@ namespace SmartAlertAPI.Repositories
             return incident;
         }
 
-        public Incident UpdateIncidentStatus(IncidentUpdateDTO incidentDTO, string status)
+        public Incident? UpdateIncidentStatus(Guid id, string status)
         {
-            throw new NotImplementedException();
+            Incident? dbIncident = GetIncidentById(id);
+
+            if (dbIncident is not null)
+            {
+                IncidentState state = dbIncident.State;
+
+                if (status.ToLower().Equals("accepted"))
+                    state = IncidentState.Accepted;
+                else if (status.ToLower().Equals("rejected"))
+                    state = IncidentState.Rejected;
+                else
+                    return null;
+
+                dbIncident.State = state;
+                
+                _context.Incidents.Update(dbIncident);
+                _context.SaveChanges();
+
+                return dbIncident;
+            }
+
+            return null;
+        }
+
+        public Incident? UpdateIncidentSumbissions(Guid id) {
+            Incident? dbIncident = GetIncidentById(id);
+
+            if (dbIncident is not null)
+            {
+                dbIncident.TotalSubmissions += 1;
+                _context.Incidents.Update(dbIncident);
+                _context.SaveChanges();
+                return dbIncident;
+            }
+
+            return null;
         }
     }
 }

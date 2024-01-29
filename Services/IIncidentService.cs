@@ -9,6 +9,6 @@ namespace SmartAlertAPI.Services
         APIResponse GetIncidentById(Guid id);
         APIResponse GetIncidentByCategory(string category);
         APIResponse CreateUpdateIncident(IncidentCreateDTO incidentDTO);
-        APIResponse UpdateIncidentStatus(IncidentUpdateDTO incidentDTO);
+        APIResponse UpdateIncidentStatus(Guid id, string status);
     }
 }

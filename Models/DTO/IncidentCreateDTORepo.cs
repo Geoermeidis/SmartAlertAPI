@@ -1,8 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace SmartAlertAPI.Models.DTO
+﻿namespace SmartAlertAPI.Models.DTO
 {
-    public class IncidentCreateDTO
+    public class IncidentCreateDTORepo
     {
         public string CategoryName { get; set; }
         public string Comments { get; set; }
@@ -10,6 +8,7 @@ namespace SmartAlertAPI.Models.DTO
         public string PhotoURL { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-
+        public Guid CategoryId { get; set; }
+        public DangerCategory Category { get; set; }
     }
 }
