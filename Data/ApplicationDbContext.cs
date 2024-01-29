@@ -22,8 +22,7 @@ namespace SmartAlertAPI.Data
             builder.Entity<DangerCategory>()
                 .HasMany(u => u.Incidents)
                 .WithOne(u => u.Category)
-                .HasForeignKey(e => e.CategoryId)
-                .IsRequired();
+                .HasForeignKey(e => e.CategoryId);
 
             foreach (var entityType in builder.Model.GetEntityTypes())
             {

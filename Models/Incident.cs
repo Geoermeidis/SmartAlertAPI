@@ -20,11 +20,11 @@ namespace SmartAlertAPI.Models
         public int TotalSubmissions { get; set; } = 0;
         public IncidentState State { get; set; } = IncidentState.Submitted;
         [ForeignKey("CivilOfficer")]
-        public Guid AcceptedById { get; set; }
-        public User User { get; set; } = new ();
-        public User CivilOfficer { get; set; } = new ();
-        public DangerCategory Category { get; set; } = new();
-        public List<User> ReportedByUsers { get; set; }
+        public Guid? AcceptedById { get; set; }
+        public User? User { get; set; }
+        public User? CivilOfficer { get; set; }
+        public DangerCategory? Category { get; set; }
+        public List<User>? ReportedByUsers { get; set; }
     }
 
     public enum IncidentState { 

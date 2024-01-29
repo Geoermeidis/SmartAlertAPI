@@ -12,27 +12,35 @@ using FluentValidation;
 using SmartAlertAPI.Utils.Validations;
 using SmartAlertAPI.Utils.JsonWebToken;
 using SmartAlertAPI.Utils.PasswordManager;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+{
+    options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
+
 builder.Services.AddEndpointsApiExplorer();
 
-// Custom Services
+// Custom Services and repos
 builder.Services.AddSingleton<IPasswordManager, PasswordManager>();
 builder.Services.AddScoped<IJwtTokenManager, JwtTokenManager>();
 builder.Services.AddScoped<IAuthRepo, AuthRepo>();
-builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IIncidentRepo, IncidentRepo>();
-builder.Services.AddScoped<IIncidentService, IncidentService>();
 builder.Services.AddScoped<ICategoryRepo, CategoryRepo>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IIncidentService, IncidentService>();
 
 // Mapping
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 
 // Validations
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(AuthRegisterValidation));
+builder.Services.AddValidatorsFromAssemblyContaining(typeof(IncidentCreateValidation));
 
 // Swagger
 builder.Services.AddSwaggerGen(c =>
