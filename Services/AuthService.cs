@@ -19,34 +19,29 @@ namespace SmartAlertAPI.Services
             _authRepo = authRepo;
         }
 
-        public APIResponse Login(UserLoginDto userLoginDto)
+        public async Task<APIResponse> Login(UserLoginDto userLoginDto)
         {
-            APIResponse response = new() { IsSuccess = false, StatusCode = HttpStatusCode.BadRequest };
+            APIResponse response = new();
             try
             {
-                var token = _authRepo.Login(userLoginDto);
+                var token = await _authRepo.Login(userLoginDto);
 
-                response.Result = token;
-                response.IsSuccess = true;
-                response.StatusCode = HttpStatusCode.OK;
+                response.Result = token!;
             }
             catch (Exception ex) when (ex is PasswordDoesntMatchException || ex is UserDoesntExistException )
             {
                 response.ErrorMessages.Add("Username or password is incorrect");
-                response.StatusCode = HttpStatusCode.NotFound;
             }
 
             return response;
         }
 
-        public APIResponse Logout()
+        public async Task<APIResponse> Logout()
         {
-            APIResponse response = new() { IsSuccess = false, StatusCode = HttpStatusCode.BadRequest };
+            APIResponse response = new();
             try
             {
                 _authRepo.Logout();
-                response.IsSuccess = true;
-                response.StatusCode = HttpStatusCode.OK;
             }
             catch (Exception e){
                 response.ErrorMessages = [e.Message];
@@ -54,13 +49,14 @@ namespace SmartAlertAPI.Services
             return response;
         }
 
-        public APIResponse Register(UserSignupDto userSignupDto)
+        public async Task<APIResponse> Register(UserSignupDto userSignupDto)
         {
-            APIResponse response = new() { IsSuccess = false, StatusCode = HttpStatusCode.BadRequest };
+            APIResponse response = new();
+
             try
             {
-                bool UserNameIsUnique = _authRepo.IsUsernameUnique(userSignupDto.Username);
-                bool EmailIsUnique = _authRepo.IsEmailUnique(userSignupDto.Email);
+                bool UserNameIsUnique = await  _authRepo.IsUsernameUnique(userSignupDto.Username);
+                bool EmailIsUnique = await _authRepo.IsEmailUnique(userSignupDto.Email);
 
                 if (!UserNameIsUnique)
                 {
@@ -74,26 +70,20 @@ namespace SmartAlertAPI.Services
                 }
 
                 _authRepo.Signup(userSignupDto);
-
-                response.IsSuccess = true;
-                response.StatusCode = HttpStatusCode.OK;
             }
             catch (DBConcurrencyException)
             {
                 response.ErrorMessages.Clear();
                 response.ErrorMessages.Add("No affected rows");
-                response.StatusCode = HttpStatusCode.InternalServerError;
             }
             catch (DbUpdateException)
             {
                 response.ErrorMessages.Clear();
                 response.ErrorMessages.Add("Problems saving to the database");
-                response.StatusCode = HttpStatusCode.InternalServerError;
             }
             catch (Exception) {
                 response.ErrorMessages.Clear();
                 response.ErrorMessages.Add("Something unexpected happened");
-                response.StatusCode = HttpStatusCode.NotFound;
             }
             return response;
 

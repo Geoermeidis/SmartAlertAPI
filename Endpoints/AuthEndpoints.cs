@@ -36,10 +36,10 @@ namespace SmartAlertAPI.Endpoints
                 .RequireAuthorization("OfficerRole");
         }
 
-        public static IResult Register(IAuthService _authService, [FromBody] UserSignupDto userSignupDto) {
+        public async static Task<IResult> Register(IAuthService _authService, [FromBody] UserSignupDto userSignupDto) {
 
-            var response = _authService.Register(userSignupDto);  // add exception handling for database errors
-            if (response.IsSuccess){
+            var response = await _authService.Register(userSignupDto);  // add exception handling for database errors
+            if (response.ErrorMessages.IsNullOrEmpty()){
                 return Results.Ok(response);
             }
             else {
@@ -48,16 +48,16 @@ namespace SmartAlertAPI.Endpoints
 
         }
 
-        public static IResult Login(IAuthService _authService, [FromBody] UserLoginDto userLoginDto) {
-            var response = _authService.Login(userLoginDto);
-            if (response.IsSuccess)
+        public async static Task<IResult> Login(IAuthService _authService, [FromBody] UserLoginDto userLoginDto) {
+            var response = await _authService.Login(userLoginDto);
+            if (response.ErrorMessages.IsNullOrEmpty())
                 return Results.Ok(response);
             else
                 return Results.NotFound(response);
         }
 
-        public static IResult Logout(IAuthService _authService) {
-            var response = _authService.Logout();
+        public async static Task<IResult> Logout(IAuthService _authService) {
+            var response = await _authService.Logout();
             return Results.Json(response);
         }
 
