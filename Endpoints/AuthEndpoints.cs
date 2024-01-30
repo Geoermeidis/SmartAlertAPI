@@ -16,24 +16,19 @@ namespace SmartAlertAPI.Endpoints
     public static class AuthEndpoints
     {
         public static void ConfigureAuthEndpoints(this WebApplication app)
-        {           
+        {
             app.MapPost("/api/login", Login)
                 .WithName("Login")
                 .Accepts<UserLoginDto>("application/json")
                 .Produces<APIResponse>(200)
                 .Produces(400);
-            
+
             app.MapPost("/api/register", Register)
                 .WithName("Register")
                 .Accepts<UserSignupDto>("application/json")
                 .AddEndpointFilter<BasicValidationFilter<UserSignupDto>>()
                 .Produces<APIResponse>(200)
                 .Produces(400);
-            
-            app.MapGet("api/test", () => Results.Ok())
-                .WithName("Test")
-                .Produces(200)
-                .RequireAuthorization("OfficerRole");
         }
 
         public async static Task<IResult> Register(IAuthService _authService, [FromBody] UserSignupDto userSignupDto) {

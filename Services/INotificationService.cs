@@ -1,7 +1,9 @@
-﻿namespace SmartAlertAPI.Services
+﻿using SmartAlertAPI.Models;
+
+namespace SmartAlertAPI.Services
 {
     public interface INotificationService
     {
-        void SendEventsToUsers(); // sends events to co
+        Task SendEventsToUsers(EventRegistered incident); // sends events to co
     }
 }

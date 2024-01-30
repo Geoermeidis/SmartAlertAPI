@@ -84,5 +84,10 @@ namespace SmartAlertAPI.Repositories
 
             return null;
         }
+
+        public async Task<Incident?> GetIncidentWithCategory(Guid id)
+        {
+            return await _context.Incidents.Include(c => c.Category).FirstOrDefaultAsync(c => c.Id == id);
+        }
     }
 }
