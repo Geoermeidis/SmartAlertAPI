@@ -13,17 +13,29 @@ using SmartAlertAPI.Utils.Validations;
 using SmartAlertAPI.Utils.JsonWebToken;
 using SmartAlertAPI.Utils.PasswordManager;
 using System.Text.Json.Serialization;
+using Google.Cloud.Firestore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", @".\Data\credentials.json");
+
 builder.Services.AddHttpContextAccessor();
 
+// JSON options
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
 {
     options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 
 builder.Services.AddEndpointsApiExplorer();
+
+// Database
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ConnStr")));
+builder.Services.AddSingleton<FirestoreDb>(s =>
+{
+    return FirestoreDb.Create("smartalert-2faa1");
+});
 
 // Custom Services and repos
 builder.Services.AddSingleton<IPasswordManager, PasswordManager>();
@@ -32,6 +44,10 @@ builder.Services.AddScoped<IJwtTokenManager, JwtTokenManager>();
 builder.Services.AddScoped<IAuthRepo, AuthRepo>();
 builder.Services.AddScoped<IIncidentRepo, IncidentRepo>();
 builder.Services.AddScoped<ICategoryRepo, CategoryRepo>();
+
+builder.Services.AddSingleton<INotificationService>(s => new NotificationService(
+    FirestoreDb.Create("<PROJECT_ID>"), null
+    ));
 
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -74,10 +90,6 @@ builder.Services.AddSwaggerGen(c =>
             }
     });
 });
-
-// Database
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ConnStr")));
 
 // Authentcation
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
