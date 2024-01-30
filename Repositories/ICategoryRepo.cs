@@ -4,8 +4,8 @@ namespace SmartAlertAPI.Repositories
 {
     public interface ICategoryRepo
     {
-        ICollection<DangerCategory> GetDangerCategories();
-        ICollection<string> GetDangerCategoriesNames();
-        DangerCategory GetCategory(string name);
+        Task<ICollection<DangerCategory>> GetDangerCategories();
+        Task<ICollection<string>> GetDangerCategoriesNames();
+        Task<DangerCategory> GetCategory(string name);
     }
 }

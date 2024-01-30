@@ -2,6 +2,6 @@
 {
     public interface INotificationService
     {
-        void SendNotificationToUsers();
+        void SendEventsToUsers(); // sends events to co
     }
 }

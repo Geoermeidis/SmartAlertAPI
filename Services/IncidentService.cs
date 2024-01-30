@@ -25,11 +25,11 @@ namespace SmartAlertAPI.Services
             _mapper = mapper;
         }
 
-        public APIResponse GetIncidentByCategory(string category)
+        public async Task<APIResponse> GetIncidentByCategory(string category)
         {
             APIResponse response = new();
 
-            var categories = _categoryRepo.GetDangerCategoriesNames();
+            var categories = await _categoryRepo.GetDangerCategoriesNames();
 
             if (category is null) {
                 response.ErrorMessages.Add("Category is empty");
@@ -41,14 +41,14 @@ namespace SmartAlertAPI.Services
                 return response;
             }
 
-            var incidents = _incidentRepo.GetIncidentByCategory(category);
+            var incidents = await _incidentRepo.GetIncidentByCategory(category);
             incidents.ToList().ForEach(x => x.Category = null);
             response.Result = incidents;
 
             return response;
         }
 
-        public APIResponse GetIncidentById(Guid id)
+        public async Task<APIResponse> GetIncidentById(Guid id)
         {
             APIResponse response = new();
 
@@ -57,30 +57,31 @@ namespace SmartAlertAPI.Services
                 response.ErrorMessages.Add("Id is empty");
             }
             
-            var incident = _incidentRepo.GetIncidentById(id);
+            var incident = await _incidentRepo.GetIncidentById(id);
 
             if (incident is null)
             {
                 response.ErrorMessages.Add("Incident doesnt exist");
             }
-            response.Result = incident;
+            else
+                response.Result = incident;
             return response;
         }
 
-        public APIResponse GetIncidents()
+        public async Task<APIResponse> GetIncidents()
         {
-            APIResponse response = new() { Result = _incidentRepo.GetIncidents() };
+            APIResponse response = new() { Result = await _incidentRepo.GetIncidents() };
 
             return response;
         }
 
-        public APIResponse CreateUpdateIncident(IncidentCreateDTO incidentDTO)
+        public async Task<APIResponse> CreateUpdateIncident(IncidentCreateDTO incidentDTO)
         {
             APIResponse response = new();
 
             try {
                 // get category data by name
-                var category = _categoryRepo.GetCategory(incidentDTO.CategoryName);
+                var category = await _categoryRepo.GetCategory(incidentDTO.CategoryName);
              
                 // SECOND MAPPING IS USED SO THE CATEGORY ID CAN BE ASSIGNED IN THE SERVICE NOT THE REPO
                 IncidentCreateDTORepo incident = _mapper.Map<IncidentCreateDTORepo>(incidentDTO);
@@ -88,20 +89,20 @@ namespace SmartAlertAPI.Services
                 incident.CategoryId = category.Id;
                 incident.Category = category;
                 
-                var incidentDb = GetIncidentFromDbWithSameConfig(incident);
+                var incidentDb = await GetIncidentFromDbWithSameConfig(incident);
 
                 if (incidentDb is null)
                 {
                     // this means there is no incident reported that matches newer incidents data
                     // so new incident must be created
                     
-                    var createdIncident = _incidentRepo.CreateIncident(incident);
+                    var createdIncident = await _incidentRepo.CreateIncident(incident);
                     response.Result = createdIncident;
                 }
                 else {
                     // this means there is a similar incident in the database so we just up its counter
-                    var updatedIncident = _incidentRepo.UpdateIncidentSumbissions(incidentDb.Id);
-                    response.Result = updatedIncident;
+                    var updatedIncident = await _incidentRepo.UpdateIncidentSumbissions(incidentDb.Id);
+                    response.Result = updatedIncident!;
                 }
             }
             catch (Exception ex) when (ex is DbUpdateConcurrencyException || ex is DbUpdateException) {
@@ -111,11 +112,11 @@ namespace SmartAlertAPI.Services
             return response;
         }
 
-        public APIResponse UpdateIncidentStatus(Guid id, string status)
+        public async Task<APIResponse> UpdateIncidentStatus(Guid id, string status)
         {
             APIResponse response = new();
 
-            Incident? inc = _incidentRepo.UpdateIncidentStatus(id, status);
+            Incident? inc = await _incidentRepo.UpdateIncidentStatus(id, status);
             if (inc is null)
             {
                 response.ErrorMessages.Add("Incident doesnt exist or state is not 'Accepted' or 'Rejected'.");
@@ -126,7 +127,7 @@ namespace SmartAlertAPI.Services
             return response;
         }
 
-        public Incident? GetIncidentFromDbWithSameConfig(IncidentCreateDTORepo incident) { // used to decide wether to actually create the incident or just update its counter
+        public async Task<Incident?> GetIncidentFromDbWithSameConfig(IncidentCreateDTORepo incident) { // used to decide wether to actually create the incident or just update its counter
             // find location of reported incident
             GeoCoordinate reportedIncidentLocation = new (incident.Latitude, incident.Longitude);
             // set the maximum datetime, so when comparing with the db incidents,
@@ -138,7 +139,9 @@ namespace SmartAlertAPI.Services
             // THEN AN INCIDENT EXISTS IN DATABASE WITH THE SAME CONFIGS AS THE REPORTED ONE
             // SO THE COUNTER OF THE database incident must go up by 1
 
-            Incident? incidentDb = _incidentRepo.GetIncidents().Where(c => {
+            var incidents = await _incidentRepo.GetIncidents();
+
+            Incident? incidentDb = incidents.Where(c => {
                 bool isSameCategory = c.CategoryId.Equals(incident.CategoryId);
                 bool isReportedIncidentInVicinityOfCurrent = reportedIncidentLocation.GetDistanceTo(new(c.Latitude, c.Longitude)) 
                                                                     < incident.Category.MaxDistanceSubmission;

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using SmartAlertAPI.Data;
 using SmartAlertAPI.Models;
 using SmartAlertAPI.Models.DTO;
@@ -15,38 +16,38 @@ namespace SmartAlertAPI.Repositories
             _mapper = mapper;
         }
 
-        public ICollection<Incident> GetIncidents()
+        public async Task<ICollection<Incident>> GetIncidents()
         {
-            return _context.Incidents.ToList();
+            return await _context.Incidents.ToListAsync();
         }
 
-        public Incident? GetIncidentById(Guid id)
+        public async Task<Incident?> GetIncidentById(Guid id)
         {
-            return _context.Incidents.FirstOrDefault(c => c.Id == id);
+            return await _context.Incidents.FirstOrDefaultAsync(c => c.Id == id);
         }
         
-        public ICollection<Incident> GetIncidentByCategory(string category)
+        public async Task<ICollection<Incident>> GetIncidentByCategory(string category)
         {
             
-            var cat = _context.DangerCategories.FirstOrDefault(c => c.Name.Equals(category));
+            var cat = await _context.DangerCategories.FirstOrDefaultAsync(c => c.Name.Equals(category));
             if (cat is null) return [];
             var catid = cat.Id;
-            return _context.Incidents.Where(c => c.CategoryId == catid).ToList();
+            return await _context.Incidents.Where(c => c.CategoryId == catid).ToListAsync();
         }
 
-        public Incident CreateIncident(IncidentCreateDTORepo incidentDTO)
+        public async Task<Incident> CreateIncident(IncidentCreateDTORepo incidentDTO)
         {
             Incident incident = _mapper.Map<Incident>(incidentDTO);
 
-            _context.Incidents.Add(incident);
-            _context.SaveChanges();
+            await _context.Incidents.AddAsync(incident);
+            await _context.SaveChangesAsync();
 
             return incident;
         }
 
-        public Incident? UpdateIncidentStatus(Guid id, string status)
+        public async Task<Incident?> UpdateIncidentStatus(Guid id, string status)
         {
-            Incident? dbIncident = GetIncidentById(id);
+            Incident? dbIncident = await GetIncidentById(id);
 
             if (dbIncident is not null)
             {
@@ -62,7 +63,7 @@ namespace SmartAlertAPI.Repositories
                 dbIncident.State = state;
                 
                 _context.Incidents.Update(dbIncident);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return dbIncident;
             }
@@ -70,14 +71,14 @@ namespace SmartAlertAPI.Repositories
             return null;
         }
 
-        public Incident? UpdateIncidentSumbissions(Guid id) {
-            Incident? dbIncident = GetIncidentById(id);
+        public async Task<Incident?> UpdateIncidentSumbissions(Guid id) {
+            Incident? dbIncident = await GetIncidentById(id);
 
             if (dbIncident is not null)
             {
                 dbIncident.TotalSubmissions += 1;
                 _context.Incidents.Update(dbIncident);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return dbIncident;
             }
 

@@ -5,11 +5,11 @@ namespace SmartAlertAPI.Repositories
 {
     public interface IIncidentRepo
     {
-        ICollection<Incident> GetIncidents();
-        ICollection<Incident> GetIncidentByCategory(string category);
-        Incident? GetIncidentById(Guid id);
-        Incident CreateIncident(IncidentCreateDTORepo incidentDTO);
-        Incident? UpdateIncidentStatus(Guid id, string status);
-        Incident? UpdateIncidentSumbissions(Guid id);
+        Task<ICollection<Incident>> GetIncidents();
+        Task<ICollection<Incident>> GetIncidentByCategory(string category);
+        Task<Incident?> GetIncidentById(Guid id);
+        Task<Incident> CreateIncident(IncidentCreateDTORepo incidentDTO);
+        Task<Incident?> UpdateIncidentStatus(Guid id, string status);
+        Task<Incident?> UpdateIncidentSumbissions(Guid id);
     }
 }

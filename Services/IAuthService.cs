@@ -5,8 +5,8 @@ namespace SmartAlertAPI.Services
 {
     public interface IAuthService
     {
-        APIResponse Login(UserLoginDto userLoginDto);
-        APIResponse Logout();
-        APIResponse Register(UserSignupDto userSignupDto);
+        Task<APIResponse> Login(UserLoginDto userLoginDto);
+        Task<APIResponse> Logout();
+        Task<APIResponse> Register(UserSignupDto userSignupDto);
     }
 }
