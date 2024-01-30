@@ -19,6 +19,6 @@ namespace SmartAlertAPI.Models
         public double Longitude { get; set; } = 0.0;
         public string Role {  get; set; } = string.Empty;
 
-        public List<Incident> IncidentsReported = [];
+        public List<Incident>? IncidentsReported;
     }
 }

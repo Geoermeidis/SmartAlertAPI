@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartAlertAPI.Data;
 
@@ -11,9 +12,11 @@ using SmartAlertAPI.Data;
 namespace SmartAlertAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240128195511_Migration2")]
+    partial class Migration2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,9 +64,6 @@ namespace SmartAlertAPI.Migrations
                     b.Property<int>("MaxDistanceSubmission")
                         .HasColumnType("int");
 
-                    b.Property<int>("MaxTimeForNewIncident")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -79,7 +79,7 @@ namespace SmartAlertAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("AcceptedById")
+                    b.Property<Guid>("AcceptedById")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("CategoryId")
@@ -203,7 +203,9 @@ namespace SmartAlertAPI.Migrations
                 {
                     b.HasOne("SmartAlertAPI.Models.User", "CivilOfficer")
                         .WithMany()
-                        .HasForeignKey("AcceptedById");
+                        .HasForeignKey("AcceptedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("SmartAlertAPI.Models.DangerCategory", "Category")
                         .WithMany("Incidents")

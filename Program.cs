@@ -1,13 +1,10 @@
 using MagicVilla_CouponAPI;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Microsoft.Win32;
 using SmartAlertAPI.Data;
 using SmartAlertAPI.Endpoints;
-using SmartAlertAPI.Models;
 using SmartAlertAPI.Repositories;
 using SmartAlertAPI.Services;
 using System.Text;
@@ -15,24 +12,37 @@ using FluentValidation;
 using SmartAlertAPI.Utils.Validations;
 using SmartAlertAPI.Utils.JsonWebToken;
 using SmartAlertAPI.Utils.PasswordManager;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+{
+    options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
+
 builder.Services.AddEndpointsApiExplorer();
 
-// Custom Services
+// Custom Services and repos
 builder.Services.AddSingleton<IPasswordManager, PasswordManager>();
 builder.Services.AddScoped<IJwtTokenManager, JwtTokenManager>();
+
 builder.Services.AddScoped<IAuthRepo, AuthRepo>();
+builder.Services.AddScoped<IIncidentRepo, IncidentRepo>();
+builder.Services.AddScoped<ICategoryRepo, CategoryRepo>();
+
+builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IIncidentService, IncidentService>();
 
 // Mapping
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 
 // Validations
 builder.Services.AddValidatorsFromAssemblyContaining(typeof(AuthRegisterValidation));
+builder.Services.AddValidatorsFromAssemblyContaining(typeof(IncidentCreateValidation));
 
 // Swagger
 builder.Services.AddSwaggerGen(c =>
@@ -83,8 +93,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+// Authorization 
 builder.Services.AddAuthorization();
 
+// Authorization policies
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("OfficerRole", policy => policy.RequireClaim("role", "Officer").RequireClaim("scope", "alert_api"))
     .AddPolicy("CivilianRole", policy => policy.RequireClaim("role", "Civilian").RequireClaim("scope", "alert_api"));
@@ -102,6 +114,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.ConfigureAuthEndpoints();
+app.ConfigureIncidentEndpoints();
 app.UseHttpsRedirection();
 
 app.Run();
