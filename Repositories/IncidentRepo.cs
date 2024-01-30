@@ -26,7 +26,7 @@ namespace SmartAlertAPI.Repositories
             return await _context.Incidents.FirstOrDefaultAsync(c => c.Id == id);
         }
         
-        public async Task<ICollection<Incident>> GetIncidentByCategory(string category)
+        public async Task<ICollection<Incident>> GetIncidentsByCategory(string category)
         {
             
             var cat = await _context.DangerCategories.FirstOrDefaultAsync(c => c.Name.Equals(category));

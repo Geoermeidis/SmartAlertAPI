@@ -5,6 +5,6 @@ namespace SmartAlertAPI.Models
     public class TokenBlackList
     {
         [Key]
-        public string Token { get; set; } 
+        public string? Token { get; set; } 
     }
 }

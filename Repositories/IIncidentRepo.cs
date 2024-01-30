@@ -6,8 +6,8 @@ namespace SmartAlertAPI.Repositories
     public interface IIncidentRepo
     {
         Task<ICollection<Incident>> GetIncidents();
+        Task<ICollection<Incident>> GetIncidentsByCategory(string category);
         Task<Incident?> GetIncidentWithCategory(Guid id);
-        Task<ICollection<Incident>> GetIncidentByCategory(string category);
         Task<Incident?> GetIncidentById(Guid id);
         Task<Incident> CreateIncident(IncidentCreateDTORepo incidentDTO);
         Task<Incident?> UpdateIncidentStatus(Guid id, string status);

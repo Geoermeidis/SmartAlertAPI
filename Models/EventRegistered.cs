@@ -8,20 +8,20 @@ namespace SmartAlertAPI.Models
         
         public DateTime SubmittedAt { get; set; }
         
-        public double Longitude { get; set; }
+        public required double Longitude { get; set; }
         
-        public double Latitude { get; set; }
+        public required double Latitude { get; set; }
         
-        public string CategoryName { get; set; }
+        public required string CategoryName { get; set; }
         
-        public int TimeForNotification { get; set; } = 0;
+        public required int TimeForNotification { get; set; }
         
-        public int MaxDistanceNotification { get; set; } = 0;
+        public required int MaxDistanceNotification { get; set; }
         
-        public string Description { get; set; } = string.Empty;
+        public required string Description { get; set; }
         
-        public string IconURL { get; set; } = string.Empty;
+        public required string IconURL { get; set; }
         
-        public string Instructions { get; set; } = string.Empty;
+        public required string Instructions { get; set; }
     }
 }
