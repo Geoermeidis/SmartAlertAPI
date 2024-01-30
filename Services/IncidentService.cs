@@ -16,13 +16,16 @@ namespace SmartAlertAPI.Services
         private readonly ICategoryRepo _categoryRepo;
         private readonly IIncidentRepo _incidentRepo;
         private readonly IMapper _mapper;
+        private readonly INotificationService _notificationService;
         private readonly List<string> Categories = ["Volcano", "Earthquake", "Flood"];
         
-        public IncidentService(IIncidentRepo incidentRepo, ICategoryRepo categoryRepo, IMapper mapper)
+        public IncidentService(IIncidentRepo incidentRepo, ICategoryRepo categoryRepo, IMapper mapper, INotificationService notificationService)
         {
             _incidentRepo = incidentRepo;
             _categoryRepo = categoryRepo;
             _mapper = mapper;
+            _notificationService = notificationService;
+
         }
 
         public async Task<APIResponse> GetIncidentByCategory(string category)
@@ -121,8 +124,15 @@ namespace SmartAlertAPI.Services
             {
                 response.ErrorMessages.Add("Incident doesnt exist or state is not 'Accepted' or 'Rejected'.");
             }
-            else
+            else {
+                if (status.ToLower() == "accepted") { // send object to users/firebase
+                    // TODO CREATE MAP
+                    Incident? incident = await _incidentRepo.GetIncidentWithCategory(inc.Id);
+                    EventRegistered eventRegistered = _mapper.Map<EventRegistered>(incident);
+                    await _notificationService.SendEventsToUsers(eventRegistered);
+                }
                 response.Result = inc;
+            }
 
             return response;
         }
