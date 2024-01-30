@@ -45,10 +45,6 @@ builder.Services.AddScoped<IAuthRepo, AuthRepo>();
 builder.Services.AddScoped<IIncidentRepo, IncidentRepo>();
 builder.Services.AddScoped<ICategoryRepo, CategoryRepo>();
 
-builder.Services.AddSingleton<INotificationService>(s => new NotificationService(
-    FirestoreDb.Create("<PROJECT_ID>"), null
-    ));
-
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IIncidentService, IncidentService>();
@@ -99,7 +95,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-                .GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value)),
+                .GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value!)),
             ValidateIssuer = false,
             ValidateAudience = false
         };

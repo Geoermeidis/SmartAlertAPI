@@ -41,7 +41,7 @@ namespace SmartAlertAPI.Services
             APIResponse response = new();
             try
             {
-                _authRepo.Logout();
+               _authRepo.Logout();
             }
             catch (Exception e){
                 response.ErrorMessages = [e.Message];

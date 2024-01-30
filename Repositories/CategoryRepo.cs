@@ -11,17 +11,17 @@ namespace SmartAlertAPI.Repositories
         {
             _context = context;
         }
-        public async Task<DangerCategory> GetCategory(string name)
+        public async Task<DangerCategory?> GetCategory(string name)
         {
             return await _context.DangerCategories.FirstOrDefaultAsync(c => c.Name.Equals(name))!;
         }
 
-        public async Task<ICollection<DangerCategory>> GetDangerCategories()
+        public async Task<ICollection<DangerCategory>?> GetDangerCategories()
         {
             return await _context.DangerCategories.ToListAsync();
         }
 
-        public async Task<ICollection<string>> GetDangerCategoriesNames()
+        public async Task<ICollection<string>?> GetDangerCategoriesNames()
         {
             return await _context.DangerCategories.Select(c => c.Name).ToListAsync();
         }

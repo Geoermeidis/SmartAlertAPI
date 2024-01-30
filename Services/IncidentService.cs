@@ -28,7 +28,7 @@ namespace SmartAlertAPI.Services
 
         }
 
-        public async Task<APIResponse> GetIncidentByCategory(string category)
+        public async Task<APIResponse> GetIncidentsByCategory(string category)
         {
             APIResponse response = new();
 
@@ -44,7 +44,7 @@ namespace SmartAlertAPI.Services
                 return response;
             }
 
-            var incidents = await _incidentRepo.GetIncidentByCategory(category);
+            var incidents = await _incidentRepo.GetIncidentsByCategory(category);
             incidents.ToList().ForEach(x => x.Category = null);
             response.Result = incidents;
 
@@ -142,7 +142,7 @@ namespace SmartAlertAPI.Services
             GeoCoordinate reportedIncidentLocation = new (incident.Latitude, incident.Longitude);
             // set the maximum datetime, so when comparing with the db incidents,
             // if their datetime is later than this one then 2 incidents are the same
-            DateTime minimumDatetimeForSameReport = DateTime.Now.AddMinutes(-incident.Category.MaxTimeForNewIncident);
+            DateTime minimumDatetimeForSameReport = DateTime.Now.AddMinutes(-incident.Category!.MaxTimeForNewIncident);
 
             // for every incident in db, if they are in the same category as the reported one,
             // happened later than the min datetime and the reported one happened in the its vicinity

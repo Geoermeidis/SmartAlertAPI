@@ -26,7 +26,7 @@ public class JwtTokenManager : IJwtTokenManager
         ];
 
         var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-            _configuration.GetSection("AppSettings:Token").Value));
+            _configuration.GetSection("AppSettings:Token").Value!));
 
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
@@ -47,7 +47,7 @@ public class JwtTokenManager : IJwtTokenManager
 
     public bool IsValid()
     {
-        if (_applicationDbContext.TokenBlackList.Any(t => t.Token.Equals(GetToken())))
+        if (_applicationDbContext.TokenBlackList.Any(t => t.Token!.Equals(GetToken())))
             return false;
         return true;
     }
@@ -55,7 +55,7 @@ public class JwtTokenManager : IJwtTokenManager
     public string GetCurrentUserId()
     {
         JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-        var userId = handler.ReadJwtToken(GetToken().Substring(7)).Claims.ElementAt(0).Value.ToString();
+        var userId = handler.ReadJwtToken(GetToken()!.Substring(7)).Claims.ElementAt(0).Value.ToString();
         return userId;
     }
 

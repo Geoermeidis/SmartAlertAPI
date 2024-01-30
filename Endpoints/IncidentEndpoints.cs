@@ -70,7 +70,7 @@ namespace SmartAlertAPI.Endpoints
         }
         public async static Task<IResult> GetIncidentsByDanger(IIncidentService _incidentService, string danger)
         {
-            var response = await _incidentService.GetIncidentByCategory(danger);
+            var response = await _incidentService.GetIncidentsByCategory(danger);
 
             if (response.Result == null)
             {

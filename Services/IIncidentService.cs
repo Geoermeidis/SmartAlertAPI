@@ -7,7 +7,7 @@ namespace SmartAlertAPI.Services
     {
         Task<APIResponse> GetIncidents();
         Task<APIResponse> GetIncidentById(Guid id);
-        Task<APIResponse> GetIncidentByCategory(string category);
+        Task<APIResponse> GetIncidentsByCategory(string category);
         Task<APIResponse> CreateUpdateIncident(IncidentCreateDTO incidentDTO);
         Task<APIResponse> UpdateIncidentStatus(Guid id, string status);
     }
