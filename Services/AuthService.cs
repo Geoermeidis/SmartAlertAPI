@@ -19,14 +19,14 @@ namespace SmartAlertAPI.Services
             _authRepo = authRepo;
         }
 
-        public APIResponse Login(UserLoginDto userLoginDto)
+        public async Task<APIResponse> Login(UserLoginDto userLoginDto)
         {
             APIResponse response = new();
             try
             {
-                var token = _authRepo.Login(userLoginDto);
+                var token = await _authRepo.Login(userLoginDto);
 
-                response.Result = token;
+                response.Result = token!;
             }
             catch (Exception ex) when (ex is PasswordDoesntMatchException || ex is UserDoesntExistException )
             {
@@ -36,7 +36,7 @@ namespace SmartAlertAPI.Services
             return response;
         }
 
-        public APIResponse Logout()
+        public async Task<APIResponse> Logout()
         {
             APIResponse response = new();
             try
@@ -49,13 +49,14 @@ namespace SmartAlertAPI.Services
             return response;
         }
 
-        public APIResponse Register(UserSignupDto userSignupDto)
+        public async Task<APIResponse> Register(UserSignupDto userSignupDto)
         {
             APIResponse response = new();
+
             try
             {
-                bool UserNameIsUnique = _authRepo.IsUsernameUnique(userSignupDto.Username);
-                bool EmailIsUnique = _authRepo.IsEmailUnique(userSignupDto.Email);
+                bool UserNameIsUnique = await  _authRepo.IsUsernameUnique(userSignupDto.Username);
+                bool EmailIsUnique = await _authRepo.IsEmailUnique(userSignupDto.Email);
 
                 if (!UserNameIsUnique)
                 {

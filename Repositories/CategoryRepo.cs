@@ -1,4 +1,5 @@
-﻿using SmartAlertAPI.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SmartAlertAPI.Data;
 using SmartAlertAPI.Models;
 
 namespace SmartAlertAPI.Repositories
@@ -10,19 +11,19 @@ namespace SmartAlertAPI.Repositories
         {
             _context = context;
         }
-        public DangerCategory GetCategory(string name)
+        public async Task<DangerCategory> GetCategory(string name)
         {
-            return _context.DangerCategories.FirstOrDefault(c => c.Name.Equals(name))!;
+            return await _context.DangerCategories.FirstOrDefaultAsync(c => c.Name.Equals(name))!;
         }
 
-        public ICollection<DangerCategory> GetDangerCategories()
+        public async Task<ICollection<DangerCategory>> GetDangerCategories()
         {
-            return _context.DangerCategories.ToList();
+            return await _context.DangerCategories.ToListAsync();
         }
 
-        ICollection<string> ICategoryRepo.GetDangerCategoriesNames()
+        public async Task<ICollection<string>> GetDangerCategoriesNames()
         {
-            return _context.DangerCategories.Select(c => c.Name).ToList();
+            return await _context.DangerCategories.Select(c => c.Name).ToListAsync();
         }
     }
 }

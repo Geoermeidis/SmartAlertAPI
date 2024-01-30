@@ -4,9 +4,9 @@
     {
         public NotificationService() { }
 
-        public void SendNotificationToUsers()
+        public void SendEventsToUsers()
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

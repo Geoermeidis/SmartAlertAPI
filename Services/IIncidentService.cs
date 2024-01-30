@@ -5,10 +5,10 @@ namespace SmartAlertAPI.Services
 {
     public interface IIncidentService
     {
-        APIResponse GetIncidents();
-        APIResponse GetIncidentById(Guid id);
-        APIResponse GetIncidentByCategory(string category);
-        APIResponse CreateUpdateIncident(IncidentCreateDTO incidentDTO);
-        APIResponse UpdateIncidentStatus(Guid id, string status);
+        Task<APIResponse> GetIncidents();
+        Task<APIResponse> GetIncidentById(Guid id);
+        Task<APIResponse> GetIncidentByCategory(string category);
+        Task<APIResponse> CreateUpdateIncident(IncidentCreateDTO incidentDTO);
+        Task<APIResponse> UpdateIncidentStatus(Guid id, string status);
     }
 }

@@ -28,9 +28,11 @@ builder.Services.AddEndpointsApiExplorer();
 // Custom Services and repos
 builder.Services.AddSingleton<IPasswordManager, PasswordManager>();
 builder.Services.AddScoped<IJwtTokenManager, JwtTokenManager>();
+
 builder.Services.AddScoped<IAuthRepo, AuthRepo>();
 builder.Services.AddScoped<IIncidentRepo, IncidentRepo>();
 builder.Services.AddScoped<ICategoryRepo, CategoryRepo>();
+
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IIncidentService, IncidentService>();

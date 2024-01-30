@@ -25,16 +25,16 @@ public class AuthRepo: IAuthRepo
         _mapper = mapper;
     }
 
-    public void Logout()
+    public async void Logout()
     {
         var token = _jwtTokenManager.GetToken() ?? throw new Exception("You are not signed in");
-        _applicationDbContext.TokenBlackList.Add(new TokenBlackList{Token = token});
-        _applicationDbContext.SaveChanges();
+        await _applicationDbContext.TokenBlackList.AddAsync(new TokenBlackList{Token = token});
+        await _applicationDbContext.SaveChangesAsync();
     }
 
-    public string Login(UserLoginDto userData)
+    public async Task<string?> Login(UserLoginDto userData)
     {
-        var user = _applicationDbContext.Users.FirstOrDefault(u => u.Email.Equals(userData.Username) || u.Username.Equals(userData.Username));
+        var user = await _applicationDbContext.Users.FirstOrDefaultAsync(u => u.Email.Equals(userData.Username) || u.Username.Equals(userData.Username));
 
         if (user is null)
             throw new UserDoesntExistException("User not found");
@@ -58,13 +58,13 @@ public class AuthRepo: IAuthRepo
         _applicationDbContext.SaveChanges();
     }
 
-    public bool IsUsernameUnique(string username)
+    public async Task<bool> IsUsernameUnique(string username)
     {
-        return !_applicationDbContext.Users.Any(u => u.Username.Equals(username));
+        return await _applicationDbContext.Users.AnyAsync(u => u.Username.Equals(username)) == false;
     }
 
-    public bool IsEmailUnique(string email){
-        return !_applicationDbContext.Users.Any(u => u.Email.Equals(email));
+    public async Task<bool> IsEmailUnique(string email){
+        return await _applicationDbContext.Users.AnyAsync(u => u.Email.Equals(email)) == false;
     }
 
 }
