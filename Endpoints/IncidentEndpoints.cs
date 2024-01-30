@@ -42,8 +42,7 @@ namespace SmartAlertAPI.Endpoints
             app.MapPut("incidents/updatestate", UpdateIncident).WithName("UpdateIncident")
                 .Produces<APIResponse>(200)
                 .Produces(400)
-                .Produces(401)
-                .RequireAuthorization("OfficerRole");
+                .Produces(401);
         }
 
         public async static Task<IResult> GetIncidents(IIncidentService _incidentService) 
