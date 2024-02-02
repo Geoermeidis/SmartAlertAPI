@@ -71,7 +71,7 @@ public class AuthRepo: IAuthRepo
 
     public string GenerateRefreshToken()
     {
-        byte[] randomNumber = new byte[32];
+        byte[] randomNumber = new byte[128];
         using RandomNumberGenerator rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomNumber);
 

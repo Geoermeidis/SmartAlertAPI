@@ -33,8 +33,7 @@ namespace SmartAlertAPI.Endpoints
             app.MapPost("/api/refresh-token", RefreshToken)
                 .WithName("RefreshToken")
                 .Produces<APIResponse>(200)
-                .Produces(400)
-                .RequireAuthorization();
+                .Produces(400);
         }
 
         public async static Task<IResult> Register(IAuthService _authService, [FromBody] UserSignupDto userSignupDto) {
