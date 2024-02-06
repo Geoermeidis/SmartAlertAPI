@@ -88,7 +88,7 @@ namespace SmartAlertAPI.Endpoints
         {
             // TODO: if new incident is created add its id and some other stuff to firebase so the
             // client can listen to it and retrieve it
-
+            Console.WriteLine("Create incident endpoint reached");
             var response = await _incidentService.CreateUpdateIncident(incidentDTO);
 
             if (response.Result == null)

@@ -32,6 +32,7 @@ namespace SmartAlertAPI.Endpoints
 
             app.MapPost("/api/refresh-token", RefreshToken)
                 .WithName("RefreshToken")
+                .Accepts<String>("application/json")
                 .Produces<APIResponse>(200)
                 .Produces(400);
         }
@@ -62,7 +63,7 @@ namespace SmartAlertAPI.Endpoints
             return Results.Json(response);
         }
 
-        public async static Task<IResult> RefreshToken(IAuthService _authService, string refreshToken) {
+        public async static Task<IResult> RefreshToken(IAuthService _authService, [FromBody] string refreshToken) {
             var response = await _authService.RefreshToken(refreshToken);
             if (response.ErrorMessages.IsNullOrEmpty())
                 return Results.Ok(response);

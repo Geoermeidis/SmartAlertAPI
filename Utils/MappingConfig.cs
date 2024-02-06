@@ -23,7 +23,6 @@ namespace MagicVilla_CouponAPI
                 .ForMember(dest => dest.TimeForNotification, opt => opt.MapFrom(src => src.Category!.TimeForNotification))
                 .ForMember(dest => dest.MaxDistanceNotification, opt => opt.MapFrom(src => src.Category!.MaxDistanceNotification))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Category!.Description))
-                .ForMember(dest => dest.IconURL, opt => opt.MapFrom(src => src.Category!.IconURL))
                 .ForMember(dest => dest.Instructions, opt => opt.MapFrom(src => src.Category!.Instructions));
         }
     }

@@ -38,6 +38,7 @@ namespace SmartAlertAPI.Repositories
         public async Task<Incident> CreateIncident(IncidentCreateDTORepo incidentDTO)
         {
             Incident incident = _mapper.Map<Incident>(incidentDTO);
+            
 
             await _context.Incidents.AddAsync(incident);
             await _context.SaveChangesAsync();
