@@ -1,10 +1,12 @@
 ﻿using FluentValidation;
+using Google.Apis.Auth.OAuth2.Requests;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using SmartAlertAPI.Models;
 using SmartAlertAPI.Models.Dto;
 using SmartAlertAPI.Repositories;
 using SmartAlertAPI.Utils.Exceptions;
+using SmartAlertAPI.Utils.JsonWebToken;
 using System.Data;
 using System.Net;
 
@@ -13,10 +15,12 @@ namespace SmartAlertAPI.Services
     public class AuthService: IAuthService
     {
         private readonly IAuthRepo _authRepo;
+        private readonly IJwtTokenManager _jwtTokenManager;
 
-        public AuthService(IAuthRepo authRepo)
+        public AuthService(IAuthRepo authRepo, IJwtTokenManager jwtTokenManager)
         {
             _authRepo = authRepo;
+            _jwtTokenManager = jwtTokenManager;
         }
 
         public async Task<APIResponse> Login(UserLoginDto userLoginDto)
@@ -25,8 +29,11 @@ namespace SmartAlertAPI.Services
             try
             {
                 var token = await _authRepo.Login(userLoginDto);
+                var refreshToken = _authRepo.GenerateRefreshToken();
+                
+                await _authRepo.UpdateRefreshToken(userLoginDto.Username, refreshToken);
 
-                response.Result = token!;
+                response.Result = new Tokens() {AccessToken = token, RefreshToken = refreshToken };
             }
             catch (Exception ex) when (ex is PasswordDoesntMatchException || ex is UserDoesntExistException )
             {
@@ -88,6 +95,26 @@ namespace SmartAlertAPI.Services
             return response;
 
 
+        }
+
+        public async Task<APIResponse> RefreshToken(string refreshToken) {
+            // Validate the refresh token
+            APIResponse response = new();
+            User user = await _authRepo.GetByRefreshToken(refreshToken);
+
+            if (user == null || user.RefreshTokenExpiration < DateTime.Now)
+            {
+                response.ErrorMessages.Add("Session expired");
+                return response;
+            }
+
+            // Generate a new access token
+
+            string newAccessToken = _jwtTokenManager.CreateToken(user);
+            response.Result = newAccessToken;
+
+            // Return the new access token
+            return response;
         }
     }
 }
