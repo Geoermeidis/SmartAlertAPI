@@ -7,6 +7,7 @@ using SmartAlertAPI.Utils.Exceptions;
 using SmartAlertAPI.Utils.JsonWebToken;
 using SmartAlertAPI.Utils.PasswordManager;
 using System.Data;
+using System.Security.Cryptography;
 
 namespace SmartAlertAPI.Repositories;
 
@@ -54,6 +55,7 @@ public class AuthRepo: IAuthRepo
         user.PasswordHash = passwordHash;
         user.PasswordSalt = passwordSalt;
 
+
         _applicationDbContext.Users.Add(user);
         _applicationDbContext.SaveChanges();
     }
@@ -65,6 +67,29 @@ public class AuthRepo: IAuthRepo
 
     public async Task<bool> IsEmailUnique(string email){
         return await _applicationDbContext.Users.AnyAsync(u => u.Email.Equals(email)) == false;
+    }
+
+    public string GenerateRefreshToken()
+    {
+        byte[] randomNumber = new byte[128];
+        using RandomNumberGenerator rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomNumber);
+
+        return Convert.ToBase64String(randomNumber);
+    }
+
+    public async Task UpdateRefreshToken(string username, string refreshToken)
+    {
+        var user = await _applicationDbContext.Users.FirstOrDefaultAsync(c => c.Username.Equals(username));
+        user.RefreshToken = refreshToken;
+        user.RefreshTokenExpiration = DateTime.Now.AddDays(7);
+
+        _applicationDbContext.Users.Update(user);
+        await _applicationDbContext.SaveChangesAsync();
+    }
+
+    public async Task<User?> GetByRefreshToken(string token) {
+        return await _applicationDbContext.Users.FirstOrDefaultAsync(u => u.RefreshToken == token);
     }
 
 }

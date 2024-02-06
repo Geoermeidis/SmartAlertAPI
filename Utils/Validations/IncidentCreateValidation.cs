@@ -7,10 +7,10 @@ namespace SmartAlertAPI.Utils.Validations
     {
         public IncidentCreateValidation()
         {
-            List<string> categories = ["Tornado", "Earthquake", "Avalanche", "andslide", "Storm", "Floods", "Typhoon", "Cyclone", "Fire", "Volcano erruption", "Heatwave"];
+            List<string> categories = ["tornado", "earthquake", "avalanche", "landslide", "storm", "floods", "typhoon", "cyclone", "fire", "volcano erruption", "heatwave"];
             RuleFor(model => model.CategoryName).NotEmpty().NotNull().Must(categories.Contains);
-            RuleFor(model => model.PhotoURL).NotEmpty().NotEmpty().Matches("^([.|\\w|-])*\\.(?:jpg|gif|png)$");
-            RuleFor(model => model.Comments).NotEmpty().NotNull().MaximumLength(250);
+            RuleFor(model => model.PhotoURL).NotNull();
+            RuleFor(model => model.Comments).NotNull().MaximumLength(250);
             RuleFor(model => model.UserId).NotEmpty().NotNull();
             RuleFor(model => model.Latitude).NotEmpty().NotNull();
             RuleFor(model => model.Longitude).NotEmpty().NotNull();

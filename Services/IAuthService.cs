@@ -8,5 +8,6 @@ namespace SmartAlertAPI.Services
         Task<APIResponse> Login(UserLoginDto userLoginDto);
         Task<APIResponse> Logout();
         Task<APIResponse> Register(UserSignupDto userSignupDto);
+        Task<APIResponse> RefreshToken(string refreshToken);
     }
 }

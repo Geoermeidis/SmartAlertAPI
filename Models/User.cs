@@ -18,6 +18,8 @@ namespace SmartAlertAPI.Models
         public double Latitude { get; set; } = 0.0;
         public double Longitude { get; set; } = 0.0;
         public string Role {  get; set; } = string.Empty;
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiration { get; set; }
 
         public List<Incident>? IncidentsReported;
     }
