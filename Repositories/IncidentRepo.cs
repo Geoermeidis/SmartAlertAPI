@@ -18,7 +18,7 @@ namespace SmartAlertAPI.Repositories
 
         public async Task<ICollection<Incident>> GetIncidents()
         {
-            return await _context.Incidents.ToListAsync();
+            return await _context.Incidents.Include(i => i.User).Include(i => i.Category).ToListAsync();
         }
 
         public async Task<Incident?> GetIncidentById(Guid id)

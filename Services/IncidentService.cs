@@ -73,8 +73,10 @@ namespace SmartAlertAPI.Services
 
         public async Task<APIResponse> GetIncidents()
         {
-            APIResponse response = new() { Result = await _incidentRepo.GetIncidents() };
+            var incidents = await _incidentRepo.GetIncidents();
 
+            APIResponse response = new() { Result = _mapper.Map<List<IncidentResponseDTO>>(incidents) };
+  
             return response;
         }
 
