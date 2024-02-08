@@ -68,7 +68,8 @@ namespace SmartAlertAPI.Endpoints
             
             return Results.Ok(response);
         }
-        public async static Task<IResult> GetIncidentsByDanger(IIncidentService _incidentService, string danger)
+
+        public async static Task<IResult> GetIncidentsByDanger(IIncidentService _incidentService, [FromBody] string danger)
         {
             var response = await _incidentService.GetIncidentsByCategory(danger);
 

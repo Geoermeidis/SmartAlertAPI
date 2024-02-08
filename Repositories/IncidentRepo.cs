@@ -78,6 +78,7 @@ namespace SmartAlertAPI.Repositories
             if (dbIncident is not null)
             {
                 dbIncident.TotalSubmissions += 1;
+                dbIncident.SubmittedAt = DateTime.Now;
                 _context.Incidents.Update(dbIncident);
                 await _context.SaveChangesAsync();
                 return dbIncident;

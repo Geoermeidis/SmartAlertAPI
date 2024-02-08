@@ -7,7 +7,8 @@ namespace SmartAlertAPI.Utils.Validations
     {
         public IncidentCreateValidation()
         {
-            List<string> categories = ["tornado", "earthquake", "avalanche", "landslide", "storm", "floods", "typhoon", "cyclone", "fire", "volcano erruption", "heatwave"];
+            List<string> categories = ["tornado", "earthquake", "avalanche", "landslide", "blizzard", 
+                "storm", "tsunami", "floods", "industrial", "wildfire", "accident", "volcano", "heatwave"];
             RuleFor(model => model.CategoryName).NotEmpty().NotNull().Must(categories.Contains);
             RuleFor(model => model.PhotoURL).NotNull();
             RuleFor(model => model.Comments).NotNull().MaximumLength(250);

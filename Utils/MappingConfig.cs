@@ -20,11 +20,10 @@ namespace MagicVilla_CouponAPI
                 .ForMember(dest => dest.Longitude, opt => opt.MapFrom(src => src.Longitude))
                 .ForMember(dest => dest.Latitude, opt => opt.MapFrom(src => src.Latitude))
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category!.Name))
-                .ForMember(dest => dest.TimeForNotification, opt => opt.MapFrom(src => src.Category!.TimeForNotification))
                 .ForMember(dest => dest.MaxDistanceNotification, opt => opt.MapFrom(src => src.Category!.MaxDistanceNotification))
-                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Category!.Description))
-                .ForMember(dest => dest.Instructions, opt => opt.MapFrom(src => src.Category!.Instructions));
+                .ForMember(dest => dest.WebsiteURL, opt => opt.MapFrom(src => src.Category!.WebsiteURL));
             CreateMap<Incident, IncidentResponseDTO>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
                 .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments))
                 .ForMember(dest => dest.SubmittedByUsername, opt => opt.MapFrom(src => src.User.Username))

@@ -14,14 +14,8 @@ namespace SmartAlertAPI.Models
         
         public required string CategoryName { get; set; }
         
-        public required int TimeForNotification { get; set; }
-        
         public required int MaxDistanceNotification { get; set; }
         
-        public required string Description { get; set; }
-        
-        public required string IconURL { get; set; }
-        
-        public required string Instructions { get; set; }
+        public required string WebsiteURL { get; set; }
     }
 }
