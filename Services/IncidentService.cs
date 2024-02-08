@@ -43,7 +43,7 @@ namespace SmartAlertAPI.Services
                 response.ErrorMessages.Add("Category does not exist");
                 return response;
             }
-
+            
             var incidents = await _incidentRepo.GetIncidentsByCategory(category);
             incidents.ToList().ForEach(x => x.Category = null);
             response.Result = incidents;

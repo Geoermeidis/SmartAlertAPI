@@ -4,6 +4,7 @@ namespace SmartAlertAPI.Models.DTO
 {
     public class IncidentResponseDTO
     {
+        public Guid Id { get; set; }
         public string CategoryName { get; set; } = string.Empty;
         public string Comments { get; set; } = string.Empty;
         public string SubmittedByUsername { get; set; } = string.Empty;

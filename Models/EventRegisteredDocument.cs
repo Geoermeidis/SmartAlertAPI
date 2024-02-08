@@ -16,14 +16,8 @@ namespace SmartAlertAPI.Models
         [FirestoreProperty]
         public required  string CategoryName { get; set; }
         [FirestoreProperty]
-        public required  int TimeForNotification { get; set; }
-        [FirestoreProperty]
         public required  int MaxDistanceNotification { get; set; }
         [FirestoreProperty]
-        public required  string Description { get; set; }
-        [FirestoreProperty]
-        public required  string IconURL { get; set; }
-        [FirestoreProperty]
-        public required  string Instructions { get; set; }
+        public required  string WebsiteURL {  get; set; }
     }
 }
