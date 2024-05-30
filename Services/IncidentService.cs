@@ -17,7 +17,6 @@ namespace SmartAlertAPI.Services
         private readonly IIncidentRepo _incidentRepo;
         private readonly IMapper _mapper;
         private readonly INotificationService _notificationService;
-        private readonly List<string> Categories = ["Volcano", "Earthquake", "Flood"];
         
         public IncidentService(IIncidentRepo incidentRepo, ICategoryRepo categoryRepo, IMapper mapper, INotificationService notificationService)
         {

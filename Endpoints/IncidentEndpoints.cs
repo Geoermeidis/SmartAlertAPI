@@ -17,7 +17,11 @@ namespace SmartAlertAPI.Endpoints
                 .Produces<APIResponse>(200)
                 .Produces(401)
                 .RequireAuthorization();
-            
+
+            app.MapPost("test", Test).WithName("Test")
+                .Produces<APIResponse>(200)
+                .Produces(401);
+
             app.MapGet("incidents/{id}", GetIncidentById).WithName("GetIncidentById")
                 .Produces<APIResponse>(200)
                 .Produces(400)
@@ -42,7 +46,8 @@ namespace SmartAlertAPI.Endpoints
             app.MapPut("incidents/updatestate", UpdateIncident).WithName("UpdateIncident")
                 .Produces<APIResponse>(200)
                 .Produces(400)
-                .Produces(401);
+                .Produces(401)
+                .RequireAuthorization();
         }
 
         public async static Task<IResult> GetIncidents(IIncidentService _incidentService) 
@@ -121,5 +126,10 @@ namespace SmartAlertAPI.Endpoints
 
             return Results.Ok(response);
         }
+
+        public async static Task<IResult> Test(INotificationService _notificationService, [FromBody] EventRegistered eventRegistered) {
+            await _notificationService.SendEventsToUsers(eventRegistered);
+            return Results.Ok();
+        } 
     }
 }
